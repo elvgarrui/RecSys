@@ -7,8 +7,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 import os
-RUTA_PROYECTO = os.path.dirname(os.path.realpath(__file__))
-
+RUTA_PROYECTO = os.path.dirname(os.path.realpath(__file__)) 
 ADMINS = (
 
 )
@@ -18,7 +17,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'sqlite.db',                      # Or path to database file if using sqlite3.
+        'NAME': RUTA_PROYECTO[0:-6]+'sqlite.db',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -115,6 +114,7 @@ ROOT_URLCONF = 'RecSys.urls'
 WSGI_APPLICATION = 'RecSys.wsgi.application'
 
 TEMPLATE_DIRS = (
+    os.path.join(RUTA_PROYECTO, 'plantillas'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
