@@ -9,7 +9,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'principal.views.inicio', name='inicio'),
-    # url(r'^RecSys/', include('RecSys.foo.urls')),
+    
+    url(r'^mejorpuntuados/', include('principal.views.mejorPuntuados')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
