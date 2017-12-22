@@ -64,6 +64,10 @@ def mejorPuntuados(request):
         else:
             puntuados[libro] = puntos
     
+    for row in punts:
+        libro = row.libro.isbn
+        puntuados[libro]/=Puntuacion.objects.filter(libro=Libro.objects.get(isbn=libro)).count()
+    
     libros=[]
     
     for i in range(3):
