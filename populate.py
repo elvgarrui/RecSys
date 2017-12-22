@@ -62,7 +62,9 @@ def populateRatings():
         for row in reader:
             try:
                 if i<=lim:
-                    Puntuacion.objects.create(idUsuario=row[0],isbn=row[1],puntuacion=row[2])
+                    libro = Libro.objects.get(isbn=row[1])
+                    usuario = Usuario.objects.get(idUsuario=int(row[0]))
+                    Puntuacion.objects.create(libro=libro,usuario=usuario, puntuacion=int(row[2]))
                 i+=1
             except:
                 pass    
