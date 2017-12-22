@@ -1,95 +1,71 @@
+#encoding:utf-8
 import csv
-from datetime import time
-import datetime
 
 from django.core.management import call_command
 
-from main.models import Artista, Etiqueta, UsuarioArtista, UsuarioEtiquetaArtista, UsuarioAmigo
+from principal.models import Libro, Usuario, Puntuacion
 
 
-lim=500
-userL=50
-artistF = "carga/artists.dat"
-tagF = "carga/tags.dat"
-usartF = "carga/user_artists.dat"
-UsfriF = "carga/user_friends.dat"
-UstagF = "carga/user_taggedartists.dat"
+lim=50
+libF = "csv/BX-Books.csv"
+userF = "csv/BX-Users.csv"
+ratF = "csv/BX-Book-Ratings.csv"
 
 
 def populateBBDD():
     call_command('flush',interactive=False)
     call_command('syncdb',interactive=False)
     
-    populateArtistas()
-    populateEtiquetas()
-    populateUserArtists()
-    populateUserFriend()
-    populateUserTagArtists()
+    populateLibros()
+    populateUsers()
+    populateRatings()
  
  
-def populateArtistas():
-    with open(artistF) as f:
-        reader = csv.reader(f,delimiter="|")
-        print "Creando artistas..."
+def populateLibros():
+    with open(libF) as f:
+        reader = csv.reader(f,delimiter=";")
+        print "Creando Libros..."
+        i = 0
         for row in reader:
-            if int(row[0])>lim:
-                break
-            Artista.objects.get_or_create(idArtista=int(row[0]),nombre=row[1], url=row[2], pictureUrl=row[3])
+            try:
+                for a in row: a=a.decode('utf-8')
+                if i>lim:
+                    break
+                i+=1
+            
+                Libro.objects.create(isbn=row[0], titulo=row[1], autor=row[2], ano=row[3]
+                                 ,editor=row[4], urlS=row[5], urlM=row[6], urlL=row[7])
+            except:
+                pass
 
+def populateUsers():     
+    with open(userF) as f:
+        reader = csv.reader(f,delimiter=";")
+        print "Creando usuario..."
+        i = 0
+        for row in reader:
+            try:
+                if i >lim:
+                    break
+                if row[2] is not "NULL":
+                    Usuario.objects.create(idUsuario=row[0],edad=row[2],localizacion=row[1])
+                
+                i+=1
+            except:
+                pass
 
-def populateEtiquetas():     
-    with open(tagF) as f:
-        reader = csv.reader(f,delimiter="|")
-        print "Creando etiquetas..."
+def populateRatings():
+    with open(ratF) as f:
+        reader = csv.reader(f,delimiter=";")
+        print "Creando ratings..."        
+        i = 0
         for row in reader:
-            if int(row[0])>lim:
-                break
-            Etiqueta.objects.get_or_create(idTag=int(row[0]),tagValue=row[1])
-            
-            
-def populateUserArtists():           
-    with open(usartF) as f:
-        reader = csv.reader(f,delimiter="|")
-        print "Creando relaciones usuario-artista..."
-#         i=0
-        for row in reader:
-            if int(row[1])<=lim and int(row[0])<=userL:
-                try:
-                    usuarioId = row[0]
-                    artista = Artista.objects.get(idArtista=int(row[1]))
-                    t = row[2]
-                    UsuarioArtista.objects.get_or_create(usuarioId=usuarioId,artista=artista,tiempoEscucha=t)
-                except:
-                    pass
-            
-
-def populateUserFriend():
-    with open(UstagF) as f:
-        reader = csv.reader(f,delimiter="|")                
-        print "Creando amistades..."
-        for row in reader:
-            if int(row[0])<=userL and int(row[1])<=userL:
-                usuarioId=row[0]
-                amigoId=row[1]
-                UsuarioAmigo.objects.get_or_create(usuarioId=usuarioId,amigoId=amigoId)
-    
-    
-def populateUserTagArtists():
-    with open(UstagF) as f:
-        reader = csv.reader(f,delimiter="|")
-        print "Creando relaciones userartisttag..."        
-#         i=0
-        for row in reader:
-            if int(row[1])<=lim and int(row[2])<=lim and int(row[0])<=userL:
-                try:
-                    userid=row[0]
-                    artista=Artista.objects.get(idArtista=int(row[1]))
-                    tag = Etiqueta.objects.get(idTag=int(row[2]))
-                    fecha = datetime.date(int(row[5]), int(row[4]), int(row[3]))
-                    UsuarioEtiquetaArtista.objects.get_or_create(usuarioId=userid,artista=artista,fecha=fecha,tag=tag)
-                except:
-                    pass
-            
+            try:
+                if i<=lim:
+                    Puntuacion.objects.create(idUsuario=row[0],isbn=row[1],puntuacion=row[2])
+                i+=1
+            except:
+                pass    
             
 if __name__ == '__main__':
     populateBBDD()
