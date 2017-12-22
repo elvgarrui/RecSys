@@ -9,6 +9,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'principal.views.inicio', name='inicio'),
+    url(r'^populate/', 'principal.views.populateDB'),
     url(r'^search/', 'principal.views.buscarPorUsuario'),
     url(r'^mejorpuntuados/', 'principal.views.mejorPuntuados'),
 

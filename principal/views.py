@@ -9,12 +9,17 @@ from django.template import RequestContext
 
 from principal.forms import SearchForm
 from principal.models import *
+from populate import populateBBDD
 
 
 # Para autenticacion
 # from django.core.mail import EmailMessage# Create your views here.
 def inicio(request):
     return render_to_response('inicio.html')
+
+def populateDB(request):
+    populateBBDD()
+    return render_to_response('populate.html')
 
 def buscarPorUsuario(request):
     if request.method == 'POST':
