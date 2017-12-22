@@ -10,9 +10,9 @@
 	<h2>Lista de Libros</h2>
 	<hr>
 		{% for dato in libros %}
-			<h3>{{dato.libro.titulo}}</h3>
-			<p>({{dato.libro.isbn}})</p>
-			<p>Autor: {{dato.libro.autor}}</p>
+			<h3>{{dato.titulo}}</h3>
+			<p>({{dato.isbn}})</p>
+			<p>Autor: {{dato.autor}}</p>
 			<hr>
 		{% empty %}
 			<li>No hay libros</li>
