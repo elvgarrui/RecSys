@@ -1,12 +1,20 @@
 {% extends 'inicio.html' %}
 
-{% block titulo%} Music {% endblock %}
+{% block titulo%} Books {% endblock %}
 
 {% block encabezado %}
-	<h1></h1>
+	<h1>Libros por usuario</h1>
 {% endblock %}
 
 {% block contenido %}
-
+	<h2>Lista de libros</h2>
+		<hr>
+			{% for dato in libros %}
+				<h3>{{dato.isbn}}</h3>
+				<h3>{{dato.puntuacion}}</h3>
+				<hr>
+			{% empty %}
+				<li>No hay libros</li>
+			{% endfor %}
 {% endblock %}
 	
