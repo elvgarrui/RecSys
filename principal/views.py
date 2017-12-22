@@ -77,3 +77,27 @@ def mejorPuntuados(request):
             del puntuados[masP]
     
     return render_to_response('b.html',{'libros':libros})
+
+
+def similarBooks(request):
+    if request.method == 'POST':
+            formulario = SearchForm(request.POST)
+            if formulario.is_valid():
+                idFilm = form.cleaned_data['id']
+                film = get_object_or_404(Film, pk=idFilm)
+                shelf = shelve.open("dataRS.dat")
+                ItemsPrefs = shelf['ItemsPrefs']
+                shelf.close()
+                recommended = topMatches(ItemsPrefs, int(idFilm),n=3)
+                items=[]
+                for re in recommended:
+                    item = Film.objects.get(pk=int(re[1]))
+                    items.append(item)
+            else:
+                formulario = SearchForm()
+            return render_to_response('search2.html',{'formulario':formulario}, context_instance=RequestContext(request))
+        
+
+if __name__ == '__main__':
+    loadDict()
+    print "Done!"
