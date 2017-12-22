@@ -5,13 +5,15 @@ import shelve
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response, get_list_or_404
+from django.shortcuts import render_to_response, get_list_or_404, \
+    get_object_or_404
 from django.template import RequestContext
 
 from populate import populateBBDD
 from principal.forms import SearchForm
 from principal.models import *
-from principal.recommendations import transformPrefs, calculateSimilarUsers
+from principal.recommendations import transformPrefs, calculateSimilarUsers, \
+    topMatches
 
 
 Prefs={}   # matriz de usuarios y puntuaciones a cada a items
@@ -31,7 +33,11 @@ def loadDict():
     shelf['UserPrefs']=transformPrefs(Prefs)
     shelf['SimUser']=calculateSimilarUsers(Prefs, n=10)
     shelf.close()
-    
+
+def loadRS(request):
+    loadDict()
+    return render_to_response('populate.html')
+     
 
 
 def inicio(request):
@@ -80,24 +86,23 @@ def mejorPuntuados(request):
 
 
 def similarBooks(request):
+    user = None
     if request.method == 'POST':
             formulario = SearchForm(request.POST)
             if formulario.is_valid():
-                idFilm = form.cleaned_data['id']
-                film = get_object_or_404(Film, pk=idFilm)
+                idUsuario = formulario.cleaned_data['Id del usuario']
+                user = get_object_or_404(Usuario, pk=idUsuario)
                 shelf = shelve.open("dataRS.dat")
                 ItemsPrefs = shelf['ItemsPrefs']
                 shelf.close()
-                recommended = topMatches(ItemsPrefs, int(idFilm),n=3)
+                recommended = topMatches(ItemsPrefs, int(idUsuario),n=3)
+                print recommended
                 items=[]
                 for re in recommended:
-                    item = Film.objects.get(pk=int(re[1]))
+                    item = Libro.objects.get(pk=int(re[1]))
                     items.append(item)
             else:
                 formulario = SearchForm()
             return render_to_response('search2.html',{'formulario':formulario}, context_instance=RequestContext(request))
         
 
-if __name__ == '__main__':
-    loadDict()
-    print "Done!"

@@ -116,7 +116,7 @@ def calculateSimilarUsers(prefs, n=10):
         result[usuario] = scores
     return result
 
-def getRecommendedusuarios(prefs, usuarioMatch, user):
+def getRecommendedUsuarios(prefs, usuarioMatch, user):
     userRatings = prefs[user]
     scores = {}
     totalSim = {}

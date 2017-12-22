@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     url(r'^search/', 'principal.views.buscarPorUsuario'),
     url(r'^mejorpuntuados/', 'principal.views.mejorPuntuados'),
     url(r'^recomendados/', 'principal.views.similarBooks'),
+    url(r'^load/', 'principal.views.loadRS'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
