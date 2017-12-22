@@ -3,10 +3,19 @@
 {% block titulo%}  {% endblock %}
 
 {% block encabezado %}
-	<h1></h1>
+	<h1>Mejores Puntuados</h1>
 {% endblock %}
 
 {% block contenido %}
-
+	<h2>Lista de Libros</h2>
+	<hr>
+		{% for dato in libros %}
+			<h3>{{dato.titulo}}</h3>
+			<p>({{dato.isbn}})</p>
+			<p>Autor: {{dato.isbn}}</p>
+			<hr>
+		{% empty %}
+			<li>No hay libros</li>
+		{% endfor %}
 {% endblock %}
 	
