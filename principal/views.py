@@ -20,7 +20,7 @@ def buscarPorUsuario(request):
     if request.method == 'POST':
         formulario = SearchForm(request.POST)
         if formulario.is_valid():
-            usuarioLibros = Puntuacion.objects.filter(idUsuario=formulario.cleaned_data['idUsuario'])
+            usuarioLibros = Puntuacion.objects.filter(usuario=Usuario.objects.get(idUsuario=formulario.cleaned_data['idUsuario']))
             return render_to_response('a.html',{'libros':usuarioLibros})
     else:
         formulario = SearchForm()
@@ -31,7 +31,7 @@ def mejorPuntuados(request):
     puntuados={}
     punts = Puntuacion.objects.all()
     for row in punts:
-        libro = row.isbn
+        libro = row.libro.isbn
         puntos = row.puntuacion
         if libro in puntuados:
             aux=puntuados[libro]
