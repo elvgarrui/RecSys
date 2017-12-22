@@ -7,6 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_list_or_404
 from django.template import RequestContext
 
+from principal.forms import SearchForm
 from principal.models import *
 
 
@@ -14,6 +15,17 @@ from principal.models import *
 # from django.core.mail import EmailMessage# Create your views here.
 def inicio(request):
     return render_to_response('inicio.html')
+
+def buscarPorUsuario(request):
+    if request.method == 'POST':
+        formulario = SearchForm(request.POST)
+        if formulario.is_valid():
+            usuarioLibros = Puntuacion.objects.filter(idUsuario=formulario.cleaned_data['idUsuario'])
+            return render_to_response('a.html',{'libros':usuarioLibros})
+    else:
+        formulario = SearchForm()
+    return render_to_response('search.html',{'formulario':formulario}, context_instance=RequestContext(request))
+
 
 def mejorPuntuados(request):
     puntuados={}
