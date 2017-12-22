@@ -26,7 +26,7 @@ def loadDict():
     for ra in ratings:
         user = int(ra.usuario.id)
         isbn = int(ra.libro.isbn)
-        rating = float(ra.puntuacion)
+        rating = int(ra.puntuacion)
         Prefs.setdefault(user, {})
         Prefs[isbn][user] = rating
     shelf['Prefs']=Prefs
@@ -86,23 +86,28 @@ def mejorPuntuados(request):
 
 
 def similarBooks(request):
-    user = None
     if request.method == 'POST':
             formulario = SearchForm(request.POST)
             if formulario.is_valid():
-                idUsuario = formulario.cleaned_data['Id del usuario']
-                user = get_object_or_404(Usuario, pk=idUsuario)
+                idUsuario = formulario.cleaned_data['idUsuario']
+                usuario = Usuario.objects.get(idUsuario=idUsuario)
                 shelf = shelve.open("dataRS.dat")
                 ItemsPrefs = shelf['ItemsPrefs']
                 shelf.close()
                 recommended = topMatches(ItemsPrefs, int(idUsuario),n=3)
-                print recommended
                 items=[]
                 for re in recommended:
-                    item = Libro.objects.get(pk=int(re[1]))
-                    items.append(item)
+                    puntuaciones= Puntuacion.objects.filter(usuario=re)
+                    for li in puntuaciones:
+                        try:
+                            punts = Puntuacion.objects.get(libro=li.libro,usuario=Usuario.objects.get(idUsuario=idUsuario))
+                        except:
+                            items.append(li.libro)
+                return render_to_response('c.html', {'libros': items}, context_instance=RequestContext(request))
             else:
                 formulario = SearchForm()
-            return render_to_response('search2.html',{'formulario':formulario}, context_instance=RequestContext(request))
-        
+            return render_to_response('search.html',{'formulario':formulario}, context_instance=RequestContext(request))
+    else:
+        formulario = SearchForm()
+    return render_to_response('search.html',{'formulario':formulario}, context_instance=RequestContext(request))   
 
