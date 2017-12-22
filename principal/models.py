@@ -32,7 +32,7 @@ class Libro(models.Model):
     
 class Puntuacion(models.Model):
     idUsuario = models.IntegerField(null=True, blank=True, max_length=50)
-    ISBN = models.IntegerField(null=True, blank=True, max_length=50)
+    isbn = models.IntegerField(null=True, blank=True, max_length=50)
     puntuacion = models.IntegerField(null=True, blank=True, max_length=2, validators=[MinValueValidator(1), MaxValueValidator(10)])
     def __unicode__(self):
         return self.puntuacion
